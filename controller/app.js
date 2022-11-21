@@ -87,4 +87,28 @@ app.post('/actors', function (req, res) {
         }
     });
 });
+//////////////////////////////////////////////////////////////////////////
+//4th endpoint
+app.put('/actors/:id', function (req, res) {
+    var actor_id = req.params.id;
+
+    if (req.body.first_name == null || req.body.last_name == null) {
+        res.status(400);
+        res.type('json');
+        res.send(`{"error_msg":"missing data [key]"}`);
+    }
+    userDB.updateActor(req.body, actor_id, function (err, results) {
+        if (err) {
+            console.log(err);
+            res.status(500);
+            res.type('json');
+            res.send(`{"error_msg":"Error ocurred"}`);
+        }
+        else {
+            res.status(201);
+            res.type('json');
+            res.send(`{"actor_id": "${results.insertId}"}`)
+        }
+    });
+});
 module.exports = app;
