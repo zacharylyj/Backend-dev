@@ -18,8 +18,8 @@ var user = {
             }
         });
     },
-//////////////////////////////////////////////////////////////////////////
-//2nd endpoint
+    //////////////////////////////////////////////////////////////////////////
+    //2nd endpoint
     getActors: function (limit, offset, callback) {
         var dbConn = dbConfig.getConnection();
         dbConn.connect(function (err) {
@@ -37,8 +37,8 @@ var user = {
             };
         });
     },
-//////////////////////////////////////////////////////////////////////////
-//3rd endpoint
+    //////////////////////////////////////////////////////////////////////////
+    //3rd endpoint
     addActor: function (object, callback) {
         var dbConn = dbConfig.getConnection();
         var { first_name, last_name } = object;
