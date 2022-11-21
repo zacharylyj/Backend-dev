@@ -29,7 +29,6 @@ app.get('/actors/:id', function (req, res) {
             else {
                 res.status(204);
                 res.send();
-
             };
         };
     });
@@ -71,14 +70,14 @@ app.post('/actors', function (req, res) {
     if (req.body.first_name == null || req.body.last_name == null) {
         res.status(400);
         res.type('json');
-        res.send(`{"error_msg":"missing data [key]"}`);
+        res.send(`{"error_msg":"missing data"}`);
     }
     userDB.addActor(req.body, function (err, results) {
         if (err) {
             console.log(err);
             res.status(500);
             res.type('json');
-            res.send(`{"error_msg":"Error ocurred"}`);
+            res.send(`{"error_msg":"Internal server error"}`);
         }
         else {
             res.status(201);
@@ -95,7 +94,7 @@ app.put('/actors/:id', function (req, res) {
     if (req.body.first_name == null || req.body.last_name == null) {
         res.status(400);
         res.type('json');
-        res.send(`{"error_msg":"missing data [key]"}`);
+        res.send(`{"error_msg":"missing data"}`);
     }
     userDB.updateActor(req.body, actor_id, function (err, results) {
         if (err) {
@@ -105,10 +104,46 @@ app.put('/actors/:id', function (req, res) {
             res.send(`{"error_msg":"Error ocurred"}`);
         }
         else {
-            res.status(201);
-            res.type('json');
-            res.send(`{"actor_id": "${results.insertId}"}`)
+            if (results.length == 1) {
+                res.status(200);
+                res.type('json');
+                res.send(`{"success_msg": "record updated"}`)
+            }
+
+            else {
+                res.status(204);
+                res.send();
+            };
+
         }
     });
 });
+//////////////////////////////////////////////////////////////////////////
+//5th endpoint
+app.delete('/actors/:id', function (req, res) {
+    var actor_id = req.params.id;
+    userDB.updateActor(actor_id, function (err, results) {
+        if (err) {
+            console.log(err);
+            res.status(500);
+            res.type('json');
+            res.send(`{"error_msg":"Error ocurred"}`);
+        }
+        else {
+            if (results.length == 1) {
+                res.status(200);
+                res.type('json');
+                res.send(`{"success_msg": "record updated"}`)
+            }
+
+            else {
+                res.status(204);
+                res.send();
+            };
+
+        }
+    });
+});
+
+
 module.exports = app;

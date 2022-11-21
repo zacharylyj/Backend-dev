@@ -77,6 +77,24 @@ var user = {
             }
         });
     }
+    //////////////////////////////////////////////////////////////////////////
+    //5th endpoint
+    deleteActor: function (actor_id, callback){
+        var dbConn = dbConfig.getConnection();
+        dbConn.connect(function (err) {
+        if (err) {
+            return callback(err, null);
+        }
+        else {
+            var sql = "update actor set first_name=?, last_name=? where actor_id=?";
+            dbConn.query(sql, [first_name, last_name, actor_id], function (err, results) {
+                dbConn.end();
+                return callback(err, results);
+
+            });
+        }
+    });
+}
 
 
 
