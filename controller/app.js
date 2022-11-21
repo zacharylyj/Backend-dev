@@ -122,7 +122,7 @@ app.put('/actors/:id', function (req, res) {
 //5th endpoint
 app.delete('/actors/:id', function (req, res) {
     var actor_id = req.params.id;
-    userDB.updateActor(actor_id, function (err, results) {
+    userDB.deleteActor(actor_id, function (err, results) {
         if (err) {
             console.log(err);
             res.status(500);

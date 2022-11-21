@@ -76,7 +76,7 @@ var user = {
                 });
             }
         });
-    }
+    },
     //////////////////////////////////////////////////////////////////////////
     //5th endpoint
     deleteActor: function (actor_id, callback){
@@ -90,7 +90,6 @@ var user = {
             dbConn.query(sql, [first_name, last_name, actor_id], function (err, results) {
                 dbConn.end();
                 return callback(err, results);
-
             });
         }
     });
