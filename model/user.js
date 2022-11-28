@@ -1,3 +1,8 @@
+//Class : DAAA/FT/1B/01
+//Group : nil (no group)
+//Admission Number : P2201861
+//Name : Zachary Leong Yao Jie
+
 var dbConfig = require('./databaseConfig');
 //////////////////////////////////////////////////////////////////////////
 //1st endpoint
@@ -16,25 +21,6 @@ var user = {
                     return callback(err, results);
                 });
             }
-        });
-    },
-    //////////////////////////////////////////////////////////////////////////
-    //2nd endpoint
-    getActors: function (limit, offset, callback) {
-        var dbConn = dbConfig.getConnection();
-        dbConn.connect(function (err) {
-            if (err) {
-                return callback(err, null);
-            }
-            else {
-
-                var sql = "select actor_id, first_name, last_name from actor limit ? offset ?"
-                dbConn.query(sql, [limit, offset], function (err, results) {
-                    dbConn.end();
-                    return callback(err, results)
-
-                });
-            };
         });
     },
     //////////////////////////////////////////////////////////////////////////
