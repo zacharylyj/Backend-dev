@@ -68,8 +68,19 @@ var user = {
                 return callback(err, null);
             }
             else {
-                var sql = "update actor set first_name=?, last_name=? where actor_id=?";
-                dbConn.query(sql, [first_name, last_name, actor_id], function (err, results) {
+                if (last_name == undefined) {
+                    var sql = "update actor set first_name=? where actor_id=?";
+                    var params = [first_name, actor_id]
+                }
+                else if (first_name == undefined) {
+                    var sql = "update actor set last_name=? where actor_id=?";
+                    var params = [last_name, actor_id]
+                }
+                else {
+                    var sql = "update actor set first_name=?, last_name=? where actor_id=?";
+                    var params = [first_name, last_name, actor_id]
+                }
+                dbConn.query(sql, params, function (err, results) {
                     dbConn.end();
                     return callback(err, results);
 
@@ -79,21 +90,21 @@ var user = {
     },
     //////////////////////////////////////////////////////////////////////////
     //5th endpoint
-    deleteActor: function (actor_id, callback){
+    deleteActor: function (actor_id, callback) {
         var dbConn = dbConfig.getConnection();
         dbConn.connect(function (err) {
-        if (err) {
-            return callback(err, null);
-        }
-        else {
-            var sql = "update actor set first_name=?, last_name=? where actor_id=?";
-            dbConn.query(sql, [first_name, last_name, actor_id], function (err, results) {
-                dbConn.end();
-                return callback(err, results);
-            });
-        }
-    });
-}
+            if (err) {
+                return callback(err, null);
+            }
+            else {
+                var sql = "delete from actor where actor_id=?";
+                dbConn.query(sql, [actor_id], function (err, results) {
+                    dbConn.end();
+                    return callback(err, results);
+                });
+            }
+        });
+    }
 
 
 
