@@ -69,7 +69,6 @@ var user = {
                 dbConn.query(sql, params, function (err, results) {
                     dbConn.end();
                     return callback(err, results);
-
                 });
             }
         });

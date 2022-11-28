@@ -26,7 +26,7 @@ app.get('/actors/:id', function (req, res) {
         } else {
             if (results.length == 1) {
                 res.status(200);
-                res.type('json');
+                res.type('application/json');
                 res.send[0]
                 res.send(results[0]);
             }
@@ -50,19 +50,19 @@ app.get('/actors', function (req, res) {
 
     if (isNaN(limit) || isNaN(offset)) {
         res.status(500);
-        res.type('json');
+        res.type('application/json');
         res.send(`{"error_msg" : "Internal server error"}`);
     }
 
     userDB.getActors(limit, offset, function (err, results) {
         if (err) {
             res.status(500);
-            res.type('json');
+            res.type('application/json');
             res.send(`{"error_msg":"Internal server error"}`)
 
         } else {
             res.status(200);
-            res.type('json');
+            res.type('application/json');
             res.send(results)
 
         };
@@ -86,7 +86,7 @@ app.post('/actors', function (req, res) {
         }
         else {
             res.status(201);
-            res.type('json');
+            res.type('application/json');
             res.send(`{"actor_id": "${results.insertId}"}`)
         }
     });
@@ -96,22 +96,23 @@ app.post('/actors', function (req, res) {
 app.put('/actors/:id', function (req, res) {
     var actor_id = req.params.id;
 
-    if (req.body.first_name == null || req.body.last_name == null) {
+    if (req.body.first_name == undefined && req.body.last_name == undefined) {
         res.status(400);
-        res.type('json');
+        res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
+        return
     }
     userDB.updateActor(req.body, actor_id, function (err, results) {
         if (err) {
             console.log(err);
             res.status(500);
-            res.type('json');
-            res.send(`{"error_msg":"Error ocurred"}`);
+            res.type('application/json');
+            res.send(`{"error_msg":"Internal server error"}`);
         }
         else {
-            if (results.length == 1) {
+            if (results.affectedRows >= 1) {
                 res.status(200);
-                res.type('json');
+                res.type('application/json');
                 res.send(`{"success_msg": "record updated"}`)
             }
 
@@ -131,13 +132,13 @@ app.delete('/actors/:id', function (req, res) {
         if (err) {
             console.log(err);
             res.status(500);
-            res.type('json');
+            res.type('application/json');
             res.send(`{"error_msg":"Error ocurred"}`);
         }
         else {
             if (results.length == 1) {
                 res.status(200);
-                res.type('json');
+                res.type('application/json');
                 res.send(`{"success_msg": "record updated"}`)
             }
 
