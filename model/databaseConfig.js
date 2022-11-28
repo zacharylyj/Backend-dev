@@ -1,3 +1,8 @@
+//Class : DAAA/FT/1B/01
+//Group : nil (no group)
+//Admission Number : P2201861
+//Name : Zachary Leong Yao Jie
+
 var mysql = require('mysql');
 
 var dbconnect = {
@@ -12,5 +17,5 @@ var dbconnect = {
         return conn;
     }
 };
-module.exports = dbconnect
+module.exports = dbconnect;
 
