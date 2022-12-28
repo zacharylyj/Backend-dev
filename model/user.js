@@ -139,8 +139,8 @@ var user = {
             if (err) {
                 return callback(err, null);
             } else {
-                var sql = "select f.title p.amount, p.payment_date from payment as p, flim as f where (payment_date between ? and ?) INNER JOIN rental as r ON p.rental_id = r.rental_id INNER JOIN inventory as i r.inventory_id = i.inventory_id INNER JOIN ON i.flim_id = f.flim_id"
-                dbConn.query(sql, [customer_id], function (err, result) {
+                var sql = "select f.title, p.amount, p.payment_date from payment as p, film as f, inventory as i, rental r inner join rental on p.rental = r.rental_id inner join inventory on r.inventory_id = i.inventory_id where p.customer_id = ? and p.payment_date between ? and ?"
+                dbConn.query(sql, [start_date, end_date, customer_id], function (err, result) {
                     dbConn.end();
                     if (err) {
                         console.log(err);

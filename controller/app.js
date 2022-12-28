@@ -169,11 +169,16 @@ app.get("/film_categories/:category_id/films", function (req, res) {
 
 //////////////////////////////////////////////////////////////////////////
 //7th endpoint
-app.get("/customers/:customer_id/payment", function (req, res) {
+app.get("/customer/:customer_id/payment", function (req, res) {
     const customer_id = req.params.customer_id;
-    const start_date = req.params.start_date;
-    const end_date = req.params.end_date;
+    const start_date = req.query.start_date;
+    const end_date = req.query.end_date;
 
+
+    if (start_date == undefined || end_date == undefined) {
+        res.status(500);
+        res.send({ "Message": "internal server error" });
+    }
     userDB.innerjoin2(customer_id, start_date, end_date, function (err, result) {
         if (err) {
             console.log(err);
