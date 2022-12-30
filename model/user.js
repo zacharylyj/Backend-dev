@@ -130,14 +130,14 @@ var user = {
                 return callback(err, null);
             } else {
                 var sql = "select f.film_id, f.title, fc.category_id, f.rating, f.release_year, f.length as duration FROM film as f INNER JOIN film_category as fc ON f.film_id = fc.film_id INNER JOIN category as c ON fc.category_id = c.category_id where c.category_id =? LIMIT 3"
-                dbConn.query(sql, [customer_id], function (err, result) {
+                dbConn.query(sql, [customer_id], function (err, results) {
                     dbConn.end();
                     if (err) {
                         console.log(err);
                         return callback(err, null);
                     }
-                    console.log(result);
-                    return callback(null, result);
+                    console.log(results);
+                    return callback(null, results);
                 });
             }
         });
@@ -151,14 +151,14 @@ var user = {
                 return callback(err, null);
             } else {
                 var sql = "select f.title, p.amount, p.payment_date from film as f inner join inventory as i on f.film_id = i.film_id inner join rental as r on i.inventory_id = r.inventory_id inner join payment as p on r.rental_id = p.rental_id where p.customer_id = ? and p.payment_date between ? and ?"
-                dbConn.query(sql, [customer_id, start_date, end_date], function (err, result) {
+                dbConn.query(sql, [customer_id, start_date, end_date], function (err, results) {
                     dbConn.end();
                     if (err) {
                         console.log(err);
                         return callback(err, null);
                     }
-                    console.log(result);
-                    return callback(null, result);
+                    console.log(results);
+                    return callback(null, results);
                 });
             }
         });
@@ -166,46 +166,39 @@ var user = {
 
     //////////////////////////////////////////////////////////////////////////
     //8th endpoint
-    addCustomer: function (store_id, first_name, last_name, email, address, callback) {
+    addCustomer: function (store_id, first_name, last_name, email, addressList, callback) {
         var dbConn = dbConfig.getConnection();
-        var { address_line1, address_line2, district, city_id, postal_code, phone } = address;
+        var [address, address2, district, city_id, postal_code, phone] = addressList;
         dbConn.connect(function (err) {
             if (err) {
                 console.log(err);
                 return callback(err, null);
-            } else {
-                console.log("Connected");
-
-                let sql = `INSERT INTO address (address_line1, address_line2, district, city_id, postal_code, phone) VALUES (?,?,?,?,?,?)`;
-                conn.query(sql, [address_line1, address_line2, district, city_id, postal_code, phone], (err, result) => {
+            }
+            else {
+                let sql = `INSERT INTO address (address, address2, district, city_id, postal_code, phone) VALUES (?,?,?,?,?,?)`;
+                dbConn.query(sql, [address, address2, district, city_id, postal_code, phone], function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        return callback(err, null);
+                    }
+                    console.log(results);
+                    console.log(results.insertId);
+                    let sql1 = `INSERT INTO customer (store_id, first_name, last_name, email, address_id) VALUES (?,?,?,?,?)`;
+                    let address_id = results.insertId;
+                    dbConn.query(sql1, [store_id, first_name, last_name, email, address_id], function (err, results) {
+                        dbConn.end();
                         if (err) {
                             console.log(err);
                             return callback(err, null);
                         }
-
-                        console.log(result);
-                        console.log(result.insertId);
-                        let sql1 = `INSERT INTO customer (store_id, first_name, last_name, email, address_id) VALUES (?,?,?,?,?)`;
-                        let address_id = result.insertId;
-                        conn.query(
-                            sql1,
-                            [store_id, first_name, last_name, email, address_id],
-                            (err, result) => {
-                                conn.end();
-                                if (err) {
-                                    console.log(err);
-                                    return callback(err, null);
-                                }
-                                console.log(result);
-                                return callback(null, result);
-                            }
-                        );
+                        console.log(results);
+                        return callback(null, results);
                     }
-                );
+                    )
+                }
+                )
             }
-        
         });
     },
-
 }
 module.exports = user;

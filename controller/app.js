@@ -189,13 +189,17 @@ app.get("/customer/:customer_id/payment", (req, res) => {
 //////////////////////////////////////////////////////////////////////////
 //8th endpoint
 app.post('/customers', function (req, res) {
-
+    if (req.body.address2 == undefined) {
+        var address2 = null
+    }
+    else {
+        var address2 = req.body.address2
+    }
     if (req.body.store_id == null ||
         req.body.first_name == null ||
         req.body.last_name == null ||
         req.body.email == null ||
-        req.body.address_line1 == null ||
-        req.body.address_line2 == null ||
+        req.body.address == null ||
         req.body.district == null ||
         req.body.city_id == null ||
         req.body.postal_code == null ||
@@ -205,30 +209,31 @@ app.post('/customers', function (req, res) {
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
     }
-    if (results.length == 0) {
-        res.status(409);
-        res.type('application/json');
-        res.send(`{“error_msg”: “email already exist”}`);
-    }
-    address = [req.body.address_line1, req.body.address_line2, req.body.district, req.body.city_id, req.body.postal_code, req.body.phone]
+    addressList = [req.body.address, address2, req.body.district, req.body.city_id, req.body.postal_code, req.body.phone]
     userDB.addCustomer(
         req.body.store_id,
         req.body.first_name,
         req.body.last_name,
         req.body.email,
-        address,
+        addressList,
         function (err, results) {
             if (err) {
-                res.status(500);
-                res.type('application/json');
-                res.send(`{"error_msg":"Internal server error"}`);
+                if (err.code === 'ER_DUP_ENTRY') {
+                    res.status(409);
+                    res.type('application/json');
+                    res.send(`{"error_msg":"data already exists"}`);
+                } else {
+                    res.status(500);
+                    res.type('application/json');
+                    res.send(`{"error_msg":"Internal server error"}`);
+                }
             }
             else {
                 res.status(201);
                 res.type('application/json');
                 res.send(`{"customer_id": "${results.insertId}"}`)
             }
-        });
+        })
 });
 
 
