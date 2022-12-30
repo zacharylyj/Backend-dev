@@ -133,15 +133,14 @@ app.delete('/actors/:id', function (req, res) {
             console.log(err);
             res.status(500);
             res.type('application/json');
-            res.send(`{"error_msg":"Error ocurred"}`);
+            res.send(`{"error_msg":"Internal server error"}`);
         }
         else {
-            if (results.length == 1) {
+            if (results.affectedRows >= 1) {
                 res.status(200);
                 res.type('application/json');
-                res.send(`{"success_msg": "record updated"}`)
+                res.send(`{"success_msg": "actor deleted"}`)
             }
-
             else {
                 res.status(204);
                 res.send();
@@ -169,25 +168,21 @@ app.get("/film_categories/:category_id/films", function (req, res) {
 
 //////////////////////////////////////////////////////////////////////////
 //7th endpoint
-app.get("/customer/:customer_id/payment", function (req, res) {
-    const customer_id = req.params.customer_id;
-    const start_date = req.query.start_date;
-    const end_date = req.query.end_date;
-
-
-    if (start_date == undefined || end_date == undefined) {
-        res.status(500);
-        res.send({ "Message": "internal server error" });
-    }
-    userDB.innerjoin2(customer_id, start_date, end_date, function (err, result) {
+app.get("/customer/:customer_id/payment", (req, res) => {
+    let customer_id = req.params.customer_id;
+    let { start_date, end_date } = req.query;
+    let total = 0;
+    userDB.innerjoin2(customer_id, start_date, end_date, (err, result) => {
         if (err) {
             console.log(err);
-            res.status(500);
-            res.send({ "Message": "internal server error" });
-        } else {
-            res.status(200);
-            res.send(result);
+            return res.status(500).send({ Message: "Internal server error" });
         }
+
+        for (let i = 0; i < result.length; i++) {
+            total += parseFloat(result[i].amount);
+        }
+
+        return res.status(200).send({ rental: result, total: total.toFixed(2) });
     });
 });
 
@@ -210,8 +205,7 @@ app.post('/customers', function (req, res) {
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
     }
-
-    if (req.body.email == "") {
+    if (results.length == 0) {
         res.status(409);
         res.type('application/json');
         res.send(`{“error_msg”: “email already exist”}`);
