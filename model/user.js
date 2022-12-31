@@ -175,15 +175,13 @@ var user = {
                 return callback(err, null);
             }
             else {
-                let sql = `INSERT INTO address (address, address2, district, city_id, postal_code, phone) VALUES (?,?,?,?,?,?)`;
+                let sql = `insert into address (address, address2, district, city_id, postal_code, phone) VALUES (?,?,?,?,?,?)`;
                 dbConn.query(sql, [address, address2, district, city_id, postal_code, phone], function (err, results) {
                     if (err) {
                         console.log(err);
                         return callback(err, null);
                     }
-                    console.log(results);
-                    console.log(results.insertId);
-                    let sql1 = `INSERT INTO customer (store_id, first_name, last_name, email, address_id) VALUES (?,?,?,?,?)`;
+                    let sql1 = `insert into customer (store_id, first_name, last_name, email, address_id) VALUES (?,?,?,?,?)`;
                     let address_id = results.insertId;
                     dbConn.query(sql1, [store_id, first_name, last_name, email, address_id], function (err, results) {
                         dbConn.end();
@@ -193,10 +191,8 @@ var user = {
                         }
                         console.log(results);
                         return callback(null, results);
-                    }
-                    )
-                }
-                )
+                    });
+                });
             }
         });
     },

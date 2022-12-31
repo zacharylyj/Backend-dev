@@ -193,23 +193,23 @@ app.post('/customers', function (req, res) {
         var address2 = null
     }
     else {
-        var address2 = req.body.address2
+        var address2 = req.body.address.address_line2
     }
     if (req.body.store_id == null ||
         req.body.first_name == null ||
         req.body.last_name == null ||
         req.body.email == null ||
-        req.body.address == null ||
-        req.body.district == null ||
-        req.body.city_id == null ||
-        req.body.postal_code == null ||
-        req.body.phone == null
+        req.body.address.address_line1 == null ||
+        req.body.address.district == null ||
+        req.body.address.city_id == null ||
+        req.body.address.postal_code == null ||
+        req.body.address.phone == null
     ) {
         res.status(400);
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
     }
-    addressList = [req.body.address, address2, req.body.district, req.body.city_id, req.body.postal_code, req.body.phone]
+    addressList = [req.body.address.address_line1, address2, req.body.address.district, req.body.address.city_id, req.body.address.postal_code, req.body.address.phone]
     userDB.addCustomer(
         req.body.store_id,
         req.body.first_name,
@@ -235,6 +235,4 @@ app.post('/customers', function (req, res) {
             }
         })
 });
-
-
 module.exports = app;
