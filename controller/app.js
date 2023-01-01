@@ -158,7 +158,7 @@ app.get("/film_categories/:category_id/films", function (req, res) {
         if (err) {
             console.log(err);
             res.status(500);
-            res.send({ "Message": "internal server error" });
+            res.send({ "Message": "Internal server error" });
         } else {
             res.status(200);
             res.send(result);
@@ -175,14 +175,15 @@ app.get("/customer/:customer_id/payment", (req, res) => {
     userDB.innerjoin2(customer_id, start_date, end_date, (err, result) => {
         if (err) {
             console.log(err);
-            return res.status(500).send({ Message: "Internal server error" });
+            res.status(500)
+            res.send({ "Message": "Internal server error" });
         }
 
         for (let i = 0; i < result.length; i++) {
             total += parseFloat(result[i].amount);
         }
-
-        return res.status(200).send({ rental: result, total: total.toFixed(2) });
+        res.status(200)
+        return res.send({ rental: result, total: total.toFixed(2) });
     });
 });
 
@@ -235,4 +236,75 @@ app.post('/customers', function (req, res) {
             }
         })
 });
+
+//////////////////////////////////////////////////////////////////////////
+//9th endpoint
+app.post('/staff', function (req, res) {
+    if (req.body.first_name == null ||
+        req.body.last_name == null ||
+        req.body.address_id == null ||
+        req.body.email == null ||
+        req.body.store_id == null ||
+        req.body.active == null ||
+        req.body.username == null ||
+        req.body.password == null
+    ) {
+        res.status(400);
+        res.type('application/json');
+        res.send(`{"error_msg":"missing data"}`);
+    }
+    var usernamelen = Object.keys(req.body.username).length;
+    var passwordlen = Object.keys(req.body.password).length;
+    
+    function checkun(username) {
+        const unRegex = /^[a-zA-Z0-9]+$/;
+        return unRegex.test(username);
+    }
+    function checkpw(password) {
+        const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]+$/;
+        return pwRegex.test(password);
+    }
+    if (usernamelen < 3) {
+        res.status(422);
+        res.type('application/json');
+        res.send(`{"username_error":"Username needs to have 3 or more characters"}`);
+    }
+    else if (!(checkun(req.body.username))) {
+        res.status(422);
+        res.type('application/json');
+        res.send(`{"username_error":"Only number and letters are allowed"}`);
+    }
+    else if (passwordlen < 8) {
+        res.status(422);
+        res.type('application/json');
+        res.send(`{"password_error":"Password needs to have 8 or more characters"}`);
+    }
+    else if (!(checkpw(req.body.password))) {
+        res.status(422);
+        res.type('application/json');
+        res.send(`{"password_error":"At least 1 Upper, Lower & Special Characters are required."}`);
+    }
+    else {
+        userDB.addStaff(req.body.first_name, req.body.last_name, req.body.address_id, req.body.email, req.body.store_id, req.body.active, req.body.username, req.body.password, function (err, results) {
+            if (err) {
+                if (err.message === 'Email already in use') {
+                    res.status(409);
+                    res.type('application/json');
+                    res.send(`{"error_msg":"data already exists"}`);
+                } else {
+                    res.status(500);
+                    res.type('application/json');
+                    res.send(`{"error_msg":"Internal server error"}`);
+                }
+            }
+            else {
+                res.status(201);
+                res.type('application/json');
+                res.send(`{"customer_id": "${results.insertId}"}`)
+            }
+        })
+    }
+});
+
+
 module.exports = app;

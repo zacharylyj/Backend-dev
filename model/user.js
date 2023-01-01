@@ -196,5 +196,43 @@ var user = {
             }
         });
     },
+
+    //////////////////////////////////////////////////////////////////////////
+    //9th endpoint
+    addStaff: function (first_name, last_name, address_id, email, store_id, active, username, password, callback) {
+        var dbConn = dbConfig.getConnection();
+        dbConn.connect(function (err) {
+            if (err) {
+                console.log(err);
+                return callback(err, null);
+            }
+            else {
+                let sql2 = "select count(*) from staff where email =?";
+                dbConn.query(sql2, [email], function (err, results) {
+                    if (results[0]['count(*)'] == 0) {
+                        let sql = `insert into staff (first_name, last_name, address_id, email, store_id, active, username, password) VALUES (?,?,?,?,?,?,?,?)`;
+                        dbConn.query(sql, [first_name, last_name, address_id, email, store_id, active, username, password], function (err, results) {
+                            if (err) {
+                                console.log(err);
+                                return callback(err, null);
+                            }
+                            let sql1 = `insert into store (manager_staff_id, address_id) VALUES (?,?)`;
+                            let staff_id = results.insertId;
+                            dbConn.query(sql1, [staff_id, address_id], function (err, results) {
+                                dbConn.end();
+                                if (err) {
+                                    console.log(err);
+                                    return callback(err, null);
+                                }
+                                return callback(null, results);
+                            });
+                        });
+                    } else {
+                        return callback(new Error('Email already in use'), null);
+                    }
+                });
+            }
+        });
+    },
 }
 module.exports = user;
