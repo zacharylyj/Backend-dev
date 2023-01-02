@@ -239,7 +239,7 @@ app.post('/customers', function (req, res) {
 
 //////////////////////////////////////////////////////////////////////////
 //9th endpoint
-app.post('/staff', function (req, res) {
+app.post('/staff/store', function (req, res) {
     if (req.body.first_name == null ||
         req.body.last_name == null ||
         req.body.address_id == null ||
@@ -255,7 +255,7 @@ app.post('/staff', function (req, res) {
     }
     var usernamelen = Object.keys(req.body.username).length;
     var passwordlen = Object.keys(req.body.password).length;
-    
+
     function checkun(username) {
         const unRegex = /^[a-zA-Z0-9]+$/;
         return unRegex.test(username);
@@ -306,5 +306,58 @@ app.post('/staff', function (req, res) {
     }
 });
 
+//////////////////////////////////////////////////////////////////////////
+//10th endpoint
+app.post('/flim/inventory', function (req, res) {
+    if (req.body.original_language_id == undefined) {
+        var original_language_id = null
+    } else {
+        original_language_id = req.body.original_language_id
+    }
+    if (req.body.title == null ||
+        req.body.description == null ||
+        req.body.release_year == null ||
+        req.body.language_id == null ||
+        req.body.rental_duration == null ||
+        req.body.rental_rate == null ||
+        req.body.length == null ||
+        req.body.replacement_cost == null ||
+        req.body.rating == null ||
+        req.body.special_features == null
+    ) {
+        res.status(400);
+        res.type('application/json');
+        res.send(`{"error_msg":"missing data"}`);
+    }
+
+    userDB.addflim(req.body.title, req.body.description, req.body.release_year, req.body.language_id, original_language_id, req.body.rental_duration, req.body.rental_rate, req.body.length, req.body.replacement_cost, req.body.rating, req.body.special_features, req.body.inventory, function (err, results) {
+        if (err) {
+            if (err.message === 'Title in use') {
+                res.status(409);
+                res.type('application/json');
+                res.send(`{"error_msg":"data already exists"}`);
+            } else {
+                res.status(500);
+                res.type('application/json');
+                res.send(`{"error_msg":"Internal server error"}`);
+            }
+        }
+        else {
+            var inventory = req.body.inventory
+            res.status(201);
+            res.type('application/json');
+            var strsend = `{{"flim_id": "${results.insertId}"}{`
+            for (let i = 0; i < inventory.length; i++) {
+                strsend += `"Store_id: ${inventory[i][0]} | added ${inventory[i][1]} new dvd" \n\t\t`
+
+            }
+            strsend += `}`
+            res.send(strsend)
+
+
+        }
+    })
+
+});
 
 module.exports = app;

@@ -234,5 +234,59 @@ var user = {
             }
         });
     },
+
+    //////////////////////////////////////////////////////////////////////////
+    //10th endpoint
+    addflim: function (title, description, release_year, language_id, original_language_id, rental_duration, rental_rate, length, replacement_cost, rating, special_features, inventory, callback) {
+        var dbConn = dbConfig.getConnection();
+        dbConn.connect(function (err) {
+            if (err) {
+                console.log(err);
+                return callback(err, null);
+            }
+            else {
+                let sql2 = "select count(*) from film where title=?";
+                dbConn.query(sql2, [title], function (err, results) {
+                    if (results[0]['count(*)'] == 0) {
+                        let sql = `insert into film (title, description, release_year, language_id, original_language_id, rental_duration, rental_rate, length, replacement_cost, rating, special_features) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+                        dbConn.query(sql, [title, description, release_year, language_id, original_language_id, rental_duration, rental_rate, length, replacement_cost, rating, special_features], function (err, results) {
+                            if (err) {
+                                console.log(err);
+                                return callback(err, null);
+                            }
+                            var film_id = results.insertId;
+
+                            function insertValues(inventory) {
+                                let result = ' ';
+                                for (let i = 0; i < inventory.length; i++) {
+                                    const [id, numItr] = inventory[i];
+                                    for (let k = 0; k < numItr; k++) {
+                                        result += `(${film_id}, ${inventory[i][0]}),`;
+                                    }
+                                }
+                                return result;
+                            }
+                            var sql1 = `insert into inventory (film_id, store_id) VALUES`;
+                            sql1 += insertValues(inventory)
+                            sql1 = sql1.slice(0, -1);
+                            dbConn.query(sql1, function (err, results) {
+                                dbConn.end();
+                                if (err) {
+                                    console.log(err);
+                                    return callback(err, null);
+                                }
+                                console.log(results)
+                                return callback(null, results);
+                            });
+
+
+                        });
+                    } else {
+                        return callback(new Error('Title in use'), null);
+                    }
+                });
+            }
+        });
+    },
 }
 module.exports = user;
