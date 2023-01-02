@@ -100,7 +100,6 @@ app.put('/actors/:id', function (req, res) {
         res.status(400);
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
-        return
     }
     userDB.updateActor(req.body, actor_id, function (err, results) {
         if (err) {
@@ -335,7 +334,7 @@ app.post('/flim/inventory', function (req, res) {
             if (err.message === 'Title in use') {
                 res.status(409);
                 res.type('application/json');
-                res.send(`{"error_msg":"data already exists"}`);
+                res.send(`{"error_msg":"Movie Title already exists"}`);
             } else {
                 res.status(500);
                 res.type('application/json');
