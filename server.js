@@ -9,5 +9,5 @@ var port = 8081;
 var host = "localhost";
 
 app.listen(port, host, function () {
-    console.log(`Server hosted at http://${host}:${port}/actors`);
+    console.log(`Server hosted at http://${host}:${port}/`);
 });

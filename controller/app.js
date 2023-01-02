@@ -21,21 +21,20 @@ app.get('/actors/:id', function (req, res) {
             console.log(err);
             res.status(500);
             res.type('application/json');
-            res.send(`{"error_msg":"Internal server error"}`)
+            res.send(`{"error_msg":"Internal server error"}`);
 
         } else {
             if (results.length == 1) {
                 res.status(200);
                 res.type('application/json');
-                res.send[0]
+                res.send[0];
                 res.send(results[0]);
             }
-
             else {
                 res.status(204);
                 res.send();
-            };
-        };
+            }
+        }
     });
 });
 
@@ -43,7 +42,7 @@ app.get('/actors/:id', function (req, res) {
 //2nd endpoint
 app.get('/actors', function (req, res) {
     var limit = req.query.limit;
-    var offset = req.query.limit;
+    var offset = req.query.offset;
 
     limit = limit ? parseInt(limit) : 20;
     offset = offset ? parseInt(offset) : 0;
@@ -58,14 +57,14 @@ app.get('/actors', function (req, res) {
         if (err) {
             res.status(500);
             res.type('application/json');
-            res.send(`{"error_msg":"Internal server error"}`)
+            res.send(`{"error_msg":"Internal server error"}`);
 
         } else {
             res.status(200);
             res.type('application/json');
-            res.send(results)
+            res.send(results);
 
-        };
+        }
     });
 });
 //////////////////////////////////////////////////////////////////////////
@@ -87,7 +86,7 @@ app.post('/actors', function (req, res) {
         else {
             res.status(201);
             res.type('application/json');
-            res.send(`{"actor_id": "${results.insertId}"}`)
+            res.send(`{"actor_id": "${results.insertId}"}`);
         }
     });
 });
@@ -96,7 +95,7 @@ app.post('/actors', function (req, res) {
 app.put('/actors/:id', function (req, res) {
     var actor_id = req.params.id;
 
-    if (req.body.first_name == undefined && req.body.last_name == undefined) {
+    if (Object.keys(req.body.first_name).length == 0 && Object.keys(req.body.last_name).length == 0) {
         res.status(400);
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
@@ -104,7 +103,6 @@ app.put('/actors/:id', function (req, res) {
     userDB.updateActor(req.body, actor_id, function (err, results) {
         if (err) {
             console.log(err);
-            res.status(500);
             res.type('application/json');
             res.send(`{"error_msg":"Internal server error"}`);
         }
@@ -112,13 +110,13 @@ app.put('/actors/:id', function (req, res) {
             if (results.affectedRows >= 1) {
                 res.status(200);
                 res.type('application/json');
-                res.send(`{"success_msg": "record updated"}`)
+                res.send(`{"success_msg": "record updated"}`);
             }
 
             else {
                 res.status(204);
                 res.send();
-            };
+            }
 
         }
     });
@@ -138,12 +136,12 @@ app.delete('/actors/:id', function (req, res) {
             if (results.affectedRows >= 1) {
                 res.status(200);
                 res.type('application/json');
-                res.send(`{"success_msg": "actor deleted"}`)
+                res.send(`{"success_msg": "actor deleted"}`);
             }
             else {
                 res.status(204);
                 res.send();
-            };
+            }
 
         }
     });
@@ -167,21 +165,21 @@ app.get("/film_categories/:category_id/films", function (req, res) {
 
 //////////////////////////////////////////////////////////////////////////
 //7th endpoint
-app.get("/customer/:customer_id/payment", (req, res) => {
+app.get("/customer/:customer_id/payment", function (req, res) {
     let customer_id = req.params.customer_id;
     let { start_date, end_date } = req.query;
     let total = 0;
-    userDB.innerjoin2(customer_id, start_date, end_date, (err, result) => {
+    userDB.innerjoin2(customer_id, start_date, end_date, function (err, result) {
         if (err) {
             console.log(err);
-            res.status(500)
+            res.status(500);
             res.send({ "Message": "Internal server error" });
         }
 
         for (let i = 0; i < result.length; i++) {
             total += parseFloat(result[i].amount);
         }
-        res.status(200)
+        res.status(200);
         return res.send({ rental: result, total: total.toFixed(2) });
     });
 });
@@ -190,10 +188,10 @@ app.get("/customer/:customer_id/payment", (req, res) => {
 //8th endpoint
 app.post('/customers', function (req, res) {
     if (req.body.address2 == undefined) {
-        var address2 = null
+        var address2 = null;
     }
     else {
-        var address2 = req.body.address.address_line2
+        address2 = req.body.address.address_line2;
     }
     if (req.body.store_id == null ||
         req.body.first_name == null ||
@@ -209,7 +207,7 @@ app.post('/customers', function (req, res) {
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
     }
-    addressList = [req.body.address.address_line1, address2, req.body.address.district, req.body.address.city_id, req.body.address.postal_code, req.body.address.phone]
+    addressList = [req.body.address.address_line1, address2, req.body.address.district, req.body.address.city_id, req.body.address.postal_code, req.body.address.phone];
     userDB.addCustomer(
         req.body.store_id,
         req.body.first_name,
@@ -231,9 +229,9 @@ app.post('/customers', function (req, res) {
             else {
                 res.status(201);
                 res.type('application/json');
-                res.send(`{"customer_id": "${results.insertId}"}`)
+                res.send(`{"customer_id": "${results.insertId}"}`);
             }
-        })
+        });
 });
 
 //////////////////////////////////////////////////////////////////////////
@@ -289,19 +287,19 @@ app.post('/staff/store', function (req, res) {
                 if (err.message === 'Email already in use') {
                     res.status(409);
                     res.type('application/json');
-                    res.send(`{"error_msg":"data already exists"}`);
+                    res.send(`{"error_msg": "data already exists"}`);
                 } else {
                     res.status(500);
                     res.type('application/json');
-                    res.send(`{"error_msg":"Internal server error"}`);
+                    res.send(`{"error_msg": "Internal server error"}`);
                 }
             }
             else {
                 res.status(201);
                 res.type('application/json');
-                res.send(`{"customer_id": "${results.insertId}"}`)
+                res.send(`{"New staff_id": "${results.insertId}"}`);
             }
-        })
+        });
     }
 });
 
@@ -309,9 +307,9 @@ app.post('/staff/store', function (req, res) {
 //10th endpoint
 app.post('/flim/inventory', function (req, res) {
     if (req.body.original_language_id == undefined) {
-        var original_language_id = null
+        var original_language_id = null;
     } else {
-        original_language_id = req.body.original_language_id
+        original_language_id = req.body.original_language_id;
     }
     if (req.body.title == null ||
         req.body.description == null ||
@@ -342,20 +340,20 @@ app.post('/flim/inventory', function (req, res) {
             }
         }
         else {
-            var inventory = req.body.inventory
+            var inventory = req.body.inventory;
             res.status(201);
             res.type('application/json');
-            var strsend = `{{"flim_id": "${results.insertId}"}{`
+            var strsend = `{{"flim_id": "${results.insertId}"}{`;
             for (let i = 0; i < inventory.length; i++) {
-                strsend += `"Store_id: ${inventory[i][0]} | added ${inventory[i][1]} new dvd" \n\t\t`
+                strsend += `"Store_id: ${inventory[i][0]} | added ${inventory[i][1]} new dvd" \n\t\t`;
 
             }
-            strsend += `}`
-            res.send(strsend)
+            strsend += `}`;
+            res.send(strsend);
 
 
         }
-    })
+    });
 
 });
 

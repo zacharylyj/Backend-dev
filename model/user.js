@@ -33,13 +33,13 @@ var user = {
             }
             else {
 
-                var sql = "select actor_id, first_name, last_name from actor limit ? offset ?"
+                var sql = "select actor_id, first_name, last_name from actor limit ? offset ?";
                 dbConn.query(sql, [limit, offset], function (err, results) {
                     dbConn.end();
-                    return callback(err, results)
+                    return callback(err, results);
 
                 });
-            };
+            }
         });
     },
     //////////////////////////////////////////////////////////////////////////
@@ -75,15 +75,15 @@ var user = {
             else {
                 if (last_name == undefined) {
                     var sql = "update actor set first_name=? where actor_id=?";
-                    var params = [first_name, actor_id]
+                    var params = [first_name, actor_id];
                 }
                 else if (first_name == undefined) {
                     var sql = "update actor set last_name=? where actor_id=?";
-                    var params = [last_name, actor_id]
+                    var params = [last_name, actor_id];
                 }
                 else {
                     var sql = "update actor set first_name=?, last_name=? where actor_id=?";
-                    var params = [first_name, last_name, actor_id]
+                    var params = [first_name, last_name, actor_id];
                 }
                 dbConn.query(sql, params, function (err, results) {
                     dbConn.end();
@@ -101,15 +101,15 @@ var user = {
                 console.log(err);
                 return callback(err, null);
             } else {
-                let sql = "delete from film_actor where actor_id = ?";
-                dbConn.query(sql, [actor_id], (err, results) => {
+                var sql = "delete from film_actor where actor_id = ?";
+                dbConn.query(sql, [actor_id], function (err, results) {
                     if (err) {
                         console.log(err);
                         return callback(err, null);
                     }
                 });
                 let sql1 = "delete from actor where actor_id = ?";
-                dbConn.query(sql1, [actor_id], (err, results) => {
+                dbConn.query(sql1, [actor_id], function (err, results) {
                     if (err) {
                         console.log(err);
                         return callback(err, null);
@@ -129,7 +129,7 @@ var user = {
             if (err) {
                 return callback(err, null);
             } else {
-                var sql = "select f.film_id, f.title, fc.category_id, f.rating, f.release_year, f.length as duration FROM film as f INNER JOIN film_category as fc ON f.film_id = fc.film_id INNER JOIN category as c ON fc.category_id = c.category_id where c.category_id =? LIMIT 3"
+                var sql = "select f.film_id, f.title, fc.category_id, f.rating, f.release_year, f.length as duration FROM film as f INNER JOIN film_category as fc ON f.film_id = fc.film_id INNER JOIN category as c ON fc.category_id = c.category_id where c.category_id =? LIMIT 3";
                 dbConn.query(sql, [customer_id], function (err, results) {
                     dbConn.end();
                     if (err) {
@@ -150,7 +150,7 @@ var user = {
             if (err) {
                 return callback(err, null);
             } else {
-                var sql = "select f.title, p.amount, p.payment_date from film as f inner join inventory as i on f.film_id = i.film_id inner join rental as r on i.inventory_id = r.inventory_id inner join payment as p on r.rental_id = p.rental_id where p.customer_id = ? and p.payment_date between ? and ?"
+                var sql = "select f.title, p.amount, p.payment_date from film as f inner join inventory as i on f.film_id = i.film_id inner join rental as r on i.inventory_id = r.inventory_id inner join payment as p on r.rental_id = p.rental_id where p.customer_id = ? and p.payment_date between ? and ?";
                 dbConn.query(sql, [customer_id, start_date, end_date], function (err, results) {
                     dbConn.end();
                     if (err) {
@@ -267,7 +267,7 @@ var user = {
                                 return result;
                             }
                             var sql1 = `insert into inventory (film_id, store_id) VALUES`;
-                            sql1 += insertValues(inventory)
+                            sql1 += insertValues(inventory);
                             sql1 = sql1.slice(0, -1);
                             dbConn.query(sql1, function (err, results) {
                                 dbConn.end();
@@ -275,7 +275,7 @@ var user = {
                                     console.log(err);
                                     return callback(err, null);
                                 }
-                                console.log(results)
+                                console.log(results);
                                 return callback(null, results);
                             });
 
@@ -287,6 +287,6 @@ var user = {
                 });
             }
         });
-    },
-}
+    }
+};
 module.exports = user;
