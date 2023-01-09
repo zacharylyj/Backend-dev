@@ -250,6 +250,8 @@ app.post('/staff/store', function (req, res) {
         res.type('application/json');
         res.send(`{"error_msg":"missing data"}`);
     }
+
+
     var usernamelen = Object.keys(req.body.username).length;
     var passwordlen = Object.keys(req.body.password).length;
 
@@ -281,6 +283,8 @@ app.post('/staff/store', function (req, res) {
         res.type('application/json');
         res.send(`{"password_error":"At least 1 Upper, Lower & Special Characters are required."}`);
     }
+        
+        
     else {
         userDB.addStaff(req.body.first_name, req.body.last_name, req.body.address_id, req.body.email, req.body.store_id, req.body.active, req.body.username, req.body.password, function (err, results) {
             if (err) {
