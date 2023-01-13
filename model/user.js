@@ -4,9 +4,45 @@
 //Name : Zachary Leong Yao Jie
 
 var dbConfig = require('./databaseConfig');
-//////////////////////////////////////////////////////////////////////////
-//1st endpoint
+var jwt = require('jsonwebtoken')
+var config = require('../config/config')
+
+
 var user = {
+    //////////////////////////////////////////////////////////////////////////
+    //login
+    loginUser: function (email, password, callback) {
+        var dbConn = dbConfig.getConnection();
+        dbConn.connect(function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            else {
+                var sql = "select * from staff where email=? and password=?";
+                dbConn.query(sql, [email, password], function (err, results) {
+                    dbConn.end();
+
+                    var jwtKey = ""
+
+                    if (results.length == 0) {
+                        console.log("Login Failed");
+                    }
+                    else {
+                        console.log("Login Success");
+                        var payload = { "username": results[0].username, "first_name": results[0].first_name };
+
+                        jwt.sign(payload, config.secretKey, { expiresIn: 86400 }, function (err, jwtKey) {
+                            var message = { "JWT": jwtKey }
+                            return callback(err, message);
+
+                        });
+                    }
+                });
+            }
+        });
+    },
+    //////////////////////////////////////////////////////////////////////////
+    //1st endpoint
     getActor: function (actor_id, callback) {
         var dbConn = dbConfig.getConnection();
         dbConn.connect(function (err) {

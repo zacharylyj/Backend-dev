@@ -6,15 +6,44 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var userDB = require('../model/user');
+var verificationLib = require('../auth/verifyToken');
+
 var app = express();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(urlencodedParser);
 app.use(bodyParser.json());
+//////////////////////////////////////////////////////////////////////////
+//login
+app.post('/user', function (req, res) {
+    var email = req.body.email;
+    var password = req.body.password;
+
+    userDB.loginUser(email, password, function (err, results) {
+        if (err) {
+            console.log(err);
+            res.status(500);
+            res.type('application/json');
+            res.send(`{"error_msg":"Internal server error"}`);
+
+        } else {
+            if (results.length == 1) {
+                res.status(200);
+                res.type('application/json');
+                res.send(results);
+            }
+            else {
+                res.status(200);
+                res.type('application/json');
+                res.send(results);
+            }
+        }
+    });
+});
 
 //////////////////////////////////////////////////////////////////////////
 //1st endpoint
-app.get('/actors/:id', function (req, res) {
+app.get('/actors/:id', verificationLib.verifyToken, function (req, res) {
     var actor_id = req.params.id;
     userDB.getActor(actor_id, function (err, results) {
         if (err) {
@@ -283,8 +312,8 @@ app.post('/staff/store', function (req, res) {
         res.type('application/json');
         res.send(`{"password_error":"At least 1 Upper, Lower & Special Characters are required."}`);
     }
-        
-        
+
+
     else {
         userDB.addStaff(req.body.first_name, req.body.last_name, req.body.address_id, req.body.email, req.body.store_id, req.body.active, req.body.username, req.body.password, function (err, results) {
             if (err) {
