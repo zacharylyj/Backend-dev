@@ -7,8 +7,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var userDB = require('../model/user');
 var verificationLib = require('../auth/verifyToken');
-
 var app = express();
+var cors = require('cors');
+
+app.options('*', cors());
+app.use(cors());
+
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(urlencodedParser);
