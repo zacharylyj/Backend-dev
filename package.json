@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --kill-others \"nodemon ./backend/server\" \"nodemon ./frontend/server"
+    "ntr": "concurrently --kill-others \"nodemon ./backend/server\" \"nodemon ./frontend/server"
 
   },
   "repository": {
