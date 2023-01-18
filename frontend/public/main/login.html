@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!-- Mirrored from colorlib.com/etc/lf/Login_v14/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 17 Jan 2023 06:43:06 GMT -->
   <head>
-    <title>Login V14</title>
+    <title>SoupFlims Login</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -69,12 +68,12 @@
               f.zaraz.q.push({ m: j, a: k });
             };
           };
-          for (const l of ["track", "set", "debug"]) f.zaraz[l] = f.zaraz._f(l);
+          for (const l of ['track', 'set', 'debug']) f.zaraz[l] = f.zaraz._f(l);
           f.zaraz.init = () => {
             var m = g.getElementsByTagName(i)[0],
               n = g.createElement(i),
-              o = g.getElementsByTagName("title")[0];
-            o && (f[h].t = g.getElementsByTagName("title")[0].text);
+              o = g.getElementsByTagName('title')[0];
+            o && (f[h].t = g.getElementsByTagName('title')[0].text);
             f[h].x = Math.random();
             f[h].w = f.screen.width;
             f[h].h = f.screen.height;
@@ -92,7 +91,7 @@
                   ...u[1],
                 }))
               ))
-                zaraz.set(s[0], s[1], { scope: "page" });
+                zaraz.set(s[0], s[1], { scope: 'page' });
             f[h].q = [];
             for (; f.zaraz.q.length; ) {
               const v = f.zaraz.q.shift();
@@ -101,24 +100,24 @@
             n.defer = !0;
             for (const w of [localStorage, sessionStorage])
               Object.keys(w || {})
-                .filter((y) => y.startsWith("_zaraz_"))
+                .filter((y) => y.startsWith('_zaraz_'))
                 .forEach((x) => {
                   try {
-                    f[h]["z_" + x.slice(7)] = JSON.parse(w.getItem(x));
+                    f[h]['z_' + x.slice(7)] = JSON.parse(w.getItem(x));
                   } catch {
-                    f[h]["z_" + x.slice(7)] = w.getItem(x);
+                    f[h]['z_' + x.slice(7)] = w.getItem(x);
                   }
                 });
-            n.referrerPolicy = "origin";
+            n.referrerPolicy = 'origin';
             n.src =
-              "../../../cdn-cgi/zaraz/sd0d9.js?z=" +
+              '../../../cdn-cgi/zaraz/sd0d9.js?z=' +
               btoa(encodeURIComponent(JSON.stringify(f[h])));
             m.parentNode.insertBefore(n, m);
           };
-          ["complete", "interactive"].includes(g.readyState)
+          ['complete', 'interactive'].includes(g.readyState)
             ? zaraz.init()
-            : f.addEventListener("DOMContentLoaded", zaraz.init);
-        })(w, d, "zarazData", "script");
+            : f.addEventListener('DOMContentLoaded', zaraz.init);
+        })(w, d, 'zarazData', 'script');
       })(window, document);
     </script>
   </head>
@@ -128,7 +127,7 @@
         <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
           <form class="login100-form validate-form flex-sb flex-w">
             <span class="login100-form-title p-b-32"> Account Login </span>
-            <span class="txt1 p-b-11"> Username </span>
+            <span class="txt1 p-b-11"> Email </span>
             <div
               class="wrap-input100 validate-input m-b-36"
               data-validate="Username is required"
@@ -160,7 +159,7 @@
                 </label>
               </div>
               <div>
-                <a href="#" class="txt3"> Forgot Password? </a>
+                <a href="login_staff.html" class="txt3"> Login as Staff? </a>
               </div>
             </div>
             <div class="container-login100-form-btn">
@@ -197,9 +196,9 @@
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag("js", new Date());
+      gtag('js', new Date());
 
-      gtag("config", "UA-23581568-13");
+      gtag('config', 'UA-23581568-13');
     </script>
     <script
       defer
@@ -209,6 +208,4 @@
       crossorigin="anonymous"
     ></script>
   </body>
-
-  <!-- Mirrored from colorlib.com/etc/lf/Login_v14/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 17 Jan 2023 06:43:11 GMT -->
 </html>
