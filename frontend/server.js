@@ -26,5 +26,6 @@ app.use(serveStatic(__dirname + "/public/main", { 'index': ['login.html'] }));
 
 app.listen(port, hostname, function () {
 
+    
     console.log(`Server hosted at http://${hostname}:${port}`);
 });
